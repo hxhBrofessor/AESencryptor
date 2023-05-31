@@ -20,8 +20,42 @@ The script will encrypt the content of the binary file and write the encrypted d
 1. Include the "shellcode.h" file in your C++ source file.
 2. Use the AES key stored in "AESkey.txt" to decrypt the data in your C++ code.
 
+### Decryption Function
 
-### Output
+You'll have to use the following decryption function to succesfully decrypt the contents of the payload.h
+
+```bash
+int AESDecrypt(char * payload, unsigned int payload_len, char * key, size_t keylen) {
+    HCRYPTPROV hProv;
+    HCRYPTHASH hHash;
+    HCRYPTKEY hKey;
+
+    if (!CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)){
+        return -1;
+    }
+    if (!CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)){
+        return -1;
+    }
+    if (!CryptHashData(hHash, (BYTE*) key, (DWORD) keylen, 0)){
+        return -1;
+    }
+    if (!CryptDeriveKey(hProv, CALG_AES_256, hHash, 0,&hKey)){
+        return -1;
+    }
+    if (!CryptDecrypt(hKey, (HCRYPTHASH) NULL, 0, 0, (BYTE *) payload, (DWORD *) &payload_len)){
+        return -1;
+    }
+    CryptReleaseContext(hProv, 0);
+    CryptDestroyHash(hHash);
+    CryptDestroyKey(hKey);
+
+    return 0;
+}
+
+```
+
+
+## Output
 
 The script generates the following output files:
 
