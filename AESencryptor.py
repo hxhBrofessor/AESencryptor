@@ -38,7 +38,7 @@ iv = 16 * b'\x00'
 cipher = AES.new(hashlib.sha256(KEY).digest(), AES.MODE_CBC, iv)
 
 try:
-    plaintext = open("C:\\Users\\Sec504\\Documents\\1099\\GregsBestFriend\\G++\\testing\\beacon_x64.bin", "rb").read()
+    plaintext = open("beacon_x64.bin", "rb").read()
 except:
     print("File argument needed! %s <raw payload file>")
     sys.exit()
